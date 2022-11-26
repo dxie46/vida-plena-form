@@ -8,6 +8,7 @@ import InfoBox from '../components/infobox.js';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { database } from '../firebase-config.js'
 import { collection, getDocs } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
 
 export default function View() {
 
@@ -31,19 +32,22 @@ export default function View() {
     const [time, setTime] = useState([]);
     const [commentsQuestions, setCommentsQuestions] = useState("");
     
-    useEffect(async () => {
-        const submissionCollectionRef = collection(database, "submissions");
-        const firebaseData = await getDocs(submissionCollectionRef);
-        // const formattedData = Object.fromEntries(firebaseData.docs.map(x => [x.id, x.data()]));
-        // console.log(formattedData);
-        // console.log(formattedData["o3kPZnUCxxx0apEJBySg"].email)
-        const formattedData = firebaseData.docs.map((doc) => {
-            let curr = doc.data();
-            curr["id"] = doc.id;
-            return curr;
-        })
-        console.log(formattedData);
-        setData(formattedData);
+    useEffect(() => {
+        const handler = async () => {
+            const submissionCollectionRef = collection(database, "submissions");
+            const firebaseData = await getDocs(submissionCollectionRef);
+            // const formattedData = Object.fromEntries(firebaseData.docs.map(x => [x.id, x.data()]));
+            // console.log(formattedData);
+            // console.log(formattedData["o3kPZnUCxxx0apEJBySg"].email)
+            const formattedData = firebaseData.docs.map((doc) => {
+                let curr = doc.data();
+                curr["id"] = doc.id;
+                return curr;
+            })
+            console.log(formattedData);
+            setData(formattedData);
+        }
+        handler();
     }, [])
 
     return (
@@ -86,6 +90,11 @@ export default function View() {
                         })}
                     </AccordionDetails>
                 </Accordion>
+                <Link to='/form' style={{ textDecoration: 'none' }}>
+                    <Button variant="contained" sx={{ mt: 1 }}>
+                        Back
+                    </Button>
+                </Link>
             </Grid>
             <Grid item container xs={8} alignContent="center" justifyContent="center" spacing={1}>
             <Title />
