@@ -7,35 +7,22 @@ function Submitted() {
     const location = useLocation();
     const navigate = useNavigate();
 
-    useEffect(() => {
+    const { choices } = location.state;
 
-        window.setTimeout(new function () {
+    const dict = {
+        ['0 Ningún día']: 0,
+        ['1 Varios días']: 1,
+        ['2 Más de la mitad de los días']: 2,
+        ['3 Casi todos los días']: 3,
+    }
 
-            const { choices } = location.state;
+    let score = 0;
 
-            const dict = {
-                ['0 Ningún día']: 0,
-                ['1 Varios días']: 1,
-                ['2 Más de la mitad de los días']: 2,
-                ['3 Casi todos los días']: 3,
-            }
-
-            let score = 0;
-
-            choices.forEach((choice) => {
-                if (dict[choice]) {
-                    score = score + dict[choice];
-                }
-            })
-
-            if (score > 0) {
-                if (window.confirm("Navegando a: www.google.com")) {
-                    window.location.replace('https://www.google.com');
-                }
-            }
-        }, 8000)
-
-    }, [])
+    choices.forEach((choice) => {
+        if (dict[choice]) {
+            score = score + dict[choice];
+        }
+    })
 
     return (
         <Grid
@@ -52,6 +39,24 @@ function Submitted() {
                     <Typography variant="body1" sx={{ ml: 2, mb: 2, mt: 2, wordWrap: 'break-word' }}>
                         Comuníquese si tiene alguna pregunta. Agradecemos su tiempo y participación.
                     </Typography>
+                    {score > 0 &&
+                        <>
+                            <Typography variant="body1" sx={{ ml: 2, mb: 2, mt: 2, wordWrap: 'break-word' }}>
+                                Le recomendamos que visite este sitio para obtener más ayuda.
+                            </Typography>
+                            <Button 
+                                variant="outlined" 
+                                size="small" 
+                                sx={{ ml: 2, mb: 2 }}
+                                onClick={() => {
+                                    if (window.confirm("Navegando a www.google.com?")) {
+                                        window.location.replace('https://www.google.com');
+                                    }
+                                }}
+                                >
+                                Redirigir
+                            </Button>
+                        </>}
                 </Card>
             </Grid>
             <Grid item>

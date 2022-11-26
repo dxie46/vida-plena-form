@@ -125,7 +125,7 @@ function Form() {
                             sx={{ ml: 1 }}
                             onClick={() => {
                                 if (inputtedKey == pass) {
-                                    navigate('/view')
+                                    navigate('/view', {state: {authorized: true}})
                                 }
                             }}
                         >
