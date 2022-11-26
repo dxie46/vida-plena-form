@@ -48,18 +48,18 @@ export default function View() {
 
     return (
         <Grid container>
-            <Grid item container xs={3} alignContent="baseline">
+            <Grid item container xs={2} alignContent="baseline">
                 <Accordion>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography>Form Submissions</Typography>
                     </AccordionSummary>
-                    <AccordionDetails>
+                    <AccordionDetails sx={{ direction: "column" }}>
                         {data.map((item) => {
                             return (
                                 <Button
                                     variant="contained"
                                     size="small"
-                                    sx={{ mt: 0.5 }}
+                                    sx={{ mt: 0.5, minWidth: 200 }}
                                     onClick={() => {
                                         setEmail(item.email);
                                         setName(item.name);
@@ -87,7 +87,7 @@ export default function View() {
                     </AccordionDetails>
                 </Accordion>
             </Grid>
-            <Grid item container xs={6.5} alignContent="center" justifyContent="center" spacing={1}>
+            <Grid item container xs={8} alignContent="center" justifyContent="center" spacing={1}>
             <Title />
                 <InputForm updateInputForm={setEmail} question={"Email"} input={email}/>
                 <InputForm updateInputForm={setName} question={"Nombre y Apellido"} input={name}/>

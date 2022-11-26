@@ -7,12 +7,15 @@ function CheckboxButton(props) {
     const [currentOther, setCurrentOther] = useState("");
 
     useEffect(() => {
+        let found = false;
         for (let i = 0; i < props.input?.length; i++) {
             if (props.input[i].substring(0, 5) == "Other") {
                 setCurrentOther(props.input[i]);
+                found = true;
                 break;
             }
         }
+        if (!found) { setCurrentOther(""); }
     }, [props])
 
     return (
