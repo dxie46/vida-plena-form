@@ -6,11 +6,18 @@ import CheckboxButton from '../components/checkboxbutton.js';
 import Title from '../components/title.js';
 import InfoBox from '../components/infobox.js';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { database } from '../firebase-config.js'
 import { collection, getDocs } from 'firebase/firestore';
 import { Link, useLocation } from 'react-router-dom';
+import XLSX from 'sheetjs-style';
+import * as FileSaver from 'file-saver';
 
 export default function View() {
+
+    useEffect(() => {
+        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+    }, [])
 
     const locationRoute = useLocation();
 
@@ -33,6 +40,7 @@ export default function View() {
     const [location, setLocation] = useState([]);
     const [time, setTime] = useState([]);
     const [commentsQuestions, setCommentsQuestions] = useState("");
+    const [id, setId] = useState("");
 
     useEffect(() => {
         const handler = async () => {
@@ -49,11 +57,45 @@ export default function View() {
         handler();
     }, [])
 
+    const exportExcel = async() => {
+        let locationString = "";
+        let timeString = "";
+        location.forEach((each) => {
+            locationString = locationString + each + ", ";
+        })
+        time.forEach((each) => {
+            timeString = timeString + each + ", ";
+        })
+        const ws = XLSX.utils.json_to_sheet([{
+            "Email": email,
+            "Name": name,
+            "Phone Number": phoneNumber,
+            "Age": age,
+            "Poco interés o placer en hacer cosas": no1,
+            "Se ha sentido decaído(a), deprimido(a) o sin esperanzas": no2,
+            "Ha tenido dificultad para quedarse o permanecer dormido(a), o ha dormido demasiado": no3,
+            "Se ha sentido cansado(a) o con poca energía": no4,
+            "Sin apetito o ha comido en exceso": no5,
+            "Se ha sentido mal con usted mismo(a) – o que es un fracaso o que ha quedado mal con usted mismo(a) o con su familia": no6,
+            "Ha tenido dificultad para concentrarse en ciertas actividades, tales como leer el periódico o ver la televisión": no7,
+            "¿Se ha movido o hablado tan lento que otras personas podrían haberlo notado? o lo contrario – muy inquieto(a) o agitado(a) que ha estado moviéndose mucho más de lo normal": no8,
+            "Pensamientos de que estaría mejor muerto(a) o de lastimarse de alguna manera": no9,
+            "Si marcó cualquiera de los problemas, ¿qué tanta dificultad le han dado estos problemas para hacer su trabajo, encargarse de las tareas del hogar, o llevarse bien con otras personas?": miscMC,
+            "Sector donde vive o trabaja (o la opción más cercana)": locationString,
+            "En que horario puedo asistir, escoja todas las opciones que crea conveniente": timeString,
+            "¿Algún comentario o pregunta?": commentsQuestions
+        }]);
+        const wb = { Sheets: { 'data': ws }, SheetNames: ['data']};
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const data = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+        FileSaver.saveAs(data, id + ".xlsx");
+    }
+
     if (locationRoute.state.authorized) {
 
         return (
             <Grid container>
-                <Grid item container xs={2} alignContent="baseline">
+                <Grid item container xs={2} alignContent="baseline" direction="column">
                     <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography>Form Submissions</Typography>
@@ -83,6 +125,7 @@ export default function View() {
                                             setLocation(item.location);
                                             setTime(item.time);
                                             setCommentsQuestions(item.commentsQuestions);
+                                            setId(item.id);
                                         }}
                                     >
                                         {item.id}
@@ -91,11 +134,18 @@ export default function View() {
                             })}
                         </AccordionDetails>
                     </Accordion>
-                    <Link to='/form' style={{ textDecoration: 'none' }}>
-                        <Button variant="contained" sx={{ mt: 1 }}>
-                            Back
+                    <Grid item>
+                        <Button color="success" variant="contained" startIcon={<FileDownloadIcon />} sx={{ mt: 1 }} onClick={() => {exportExcel();}}>
+                            Export
                         </Button>
-                    </Link>
+                    </Grid>
+                    <Grid item>
+                        <Link to='/form' style={{ textDecoration: 'none' }}>
+                            <Button variant="contained" sx={{ mt: 1 }}>
+                                Back
+                            </Button>
+                        </Link>
+                    </Grid>
                 </Grid>
                 <Grid item container xs={8} alignContent="center" justifyContent="center" spacing={1}>
                     <Title />

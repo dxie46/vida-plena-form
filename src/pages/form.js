@@ -33,7 +33,7 @@ function Form() {
     const [inputtedKey, setInputtedKey] = useState("");
     const [toggleKey, setTogglekey] = useState(false);
 
-    const pass = "abc123";
+    const pass = "OQB818J749";
     const navigate = useNavigate();
 
     return (
@@ -64,7 +64,7 @@ function Form() {
                 <CheckboxButton currentChoices={location} updateChoices={setLocation} choices={["Valle de los Chillos", "Guamaní", "Quitumbe", "San Bartolo", "Las Casas", "La Florida", "Iñaquito", "El Bosque", "Condado", "La Mariscal", "Atucucho", "Other"]} question={"Sector donde vive o trabaja (o la opción más cercana)"} />
                 <CheckboxButton currentChoices={time} updateChoices={setTime} choices={["Entre semana", "Fines de semana", "En la mañana", "En las Tardes", "En las noches", "No tengo problema con el horario", "Other"]} question={"En que horario puedo asistir, escoja todas las opciones que crea conveniente"} />
                 <InputForm updateInputForm={setCommentsQuestions} question={"¿Algún comentario o pregunta?"} placeholder={"Comentario o pregunta"} />
-                <Link to="/submission" state={{ choices: [no1, no2, no3, no4, no5, no6, no7, no8, no9 ] }} style={{ textDecoration: 'none' }}>
+                <Link to="/submission" state={{ choices: [no1, no2, no3, no4, no5, no6, no7, no8, no9 ], age: age }} style={{ textDecoration: 'none' }}>
                     <Button
                         variant="contained"
                         sx={{ mt: 1 }}

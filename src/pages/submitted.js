@@ -8,6 +8,7 @@ function Submitted() {
     const navigate = useNavigate();
 
     const { choices } = location.state;
+    const { age } = location.state;
 
     const dict = {
         ['0 Ningún día']: 0,
@@ -24,6 +25,8 @@ function Submitted() {
         }
     })
 
+    console.log(age);
+
     return (
         <Grid
             container
@@ -33,30 +36,59 @@ function Submitted() {
         >
             <Grid item>
                 <Card sx={{ minHeight: 150, maxWidth: 550 }}>
-                    <Typography variant="h4" sx={{ ml: 2, mt: 2 }}>
-                        Gracias por su respuesta
-                    </Typography>
-                    <Typography variant="body1" sx={{ ml: 2, mb: 2, mt: 2, wordWrap: 'break-word' }}>
-                        Comuníquese si tiene alguna pregunta. Agradecemos su tiempo y participación.
-                    </Typography>
-                    {score > 0 &&
-                        <>
-                            <Typography variant="body1" sx={{ ml: 2, mb: 2, mt: 2, wordWrap: 'break-word' }}>
-                                Le recomendamos que visite este sitio para obtener más ayuda.
+                    {(score <= 9 && age == "mayor de 18 años") && <>
+                        <Typography variant="h4" sx={{ ml: 2, mt: 2 }}>
+                            Gracias por su respuesta
+                        </Typography>
+                        <Typography variant="body1" sx={{ ml: 2, mb: 2, mt: 2, wordWrap: 'break-word' }}>
+                            Comuníquese si tiene alguna pregunta. Agradecemos su tiempo y participación.
+                        </Typography>
+                    </>}
+                    {(score > 9 && age == "mayor de 18 años") && window.location.replace('https://www.google.com')}
+                    {(age == "menor de 18 años" || age == "") &&
+                        <Grid container direction="column">
+                            <Typography variant="h4" sx={{ ml: 2, mt: 2 }}>
+                                Gracias por su respuesta
                             </Typography>
-                            <Button 
-                                variant="outlined" 
-                                size="small" 
-                                sx={{ ml: 2, mb: 2 }}
-                                onClick={() => {
-                                    if (window.confirm("Navegando a www.google.com?")) {
-                                        window.location.replace('https://www.google.com');
-                                    }
-                                }}
-                                >
-                                Redirigir
-                            </Button>
-                        </>}
+                            <Typography variant="body1" sx={{ ml: 2, mb: 1, mt: 2, wordWrap: 'break-word' }}>
+                                Comuníquese si tiene alguna pregunta. Agradecemos su tiempo y participación.
+                            </Typography>
+                            <Grid item>
+                                <Link to="https://www.google.com" style={{ textDecoration: 'none' }}>
+                                    <Button variant="contained" sx={{ ml: 2, mb: 1 }}>
+                                        Resource 1
+                                    </Button>
+                                </Link>
+                            </Grid>
+                            <Grid item>
+                                <Link to="https://www.google.com" style={{ textDecoration: 'none' }}>
+                                    <Button variant="contained" sx={{ ml: 2, mb: 1 }}>
+                                        Resource 2
+                                    </Button>
+                                </Link>
+                            </Grid>
+                            <Grid item>
+                                <Link to="https://www.google.com" style={{ textDecoration: 'none' }}>
+                                    <Button variant="contained" sx={{ ml: 2, mb: 1 }}>
+                                        Resource 3
+                                    </Button>
+                                </Link>
+                            </Grid>
+                            <Grid item>
+                                <Link to="https://www.google.com" style={{ textDecoration: 'none' }}>
+                                    <Button variant="contained" sx={{ ml: 2, mb: 1 }}>
+                                        Resource 4
+                                    </Button>
+                                </Link>
+                            </Grid>
+                            <Grid item>
+                                <Link to="https://www.google.com" style={{ textDecoration: 'none' }}>
+                                    <Button variant="contained" sx={{ ml: 2, mb: 1 }}>
+                                        Resource 5
+                                    </Button>
+                                </Link>
+                            </Grid>
+                        </Grid>}
                 </Card>
             </Grid>
             <Grid item>
