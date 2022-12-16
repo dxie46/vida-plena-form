@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom'
 import { database } from '../firebase-config';
 import { setDoc, doc } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom';
+import logo from '../assets/vida_plena_negro.png';
 
 function Form() {
 
@@ -45,6 +46,7 @@ function Form() {
                 direction="column"
                 spacing={1}
             >
+                <img src={logo} style={{ maxWidth: 450, maxHeight: 350 }}/>
                 <Title />
                 <InputForm updateInputForm={setEmail} question={"Email"} />
                 <InputForm updateInputForm={setName} question={"Nombre y Apellido"} />
@@ -64,7 +66,7 @@ function Form() {
                 <CheckboxButton currentChoices={location} updateChoices={setLocation} choices={["Valle de los Chillos", "Guamaní", "Quitumbe", "San Bartolo", "Las Casas", "La Florida", "Iñaquito", "El Bosque", "Condado", "La Mariscal", "Atucucho", "Other"]} question={"Sector donde vive o trabaja (o la opción más cercana)"} />
                 <CheckboxButton currentChoices={time} updateChoices={setTime} choices={["Entre semana", "Fines de semana", "En la mañana", "En las Tardes", "En las noches", "No tengo problema con el horario", "Other"]} question={"En que horario puedo asistir, escoja todas las opciones que crea conveniente"} />
                 <InputForm updateInputForm={setCommentsQuestions} question={"¿Algún comentario o pregunta?"} placeholder={"Comentario o pregunta"} />
-                <Link to="/submission" state={{ choices: [no1, no2, no3, no4, no5, no6, no7, no8, no9 ], age: age }} style={{ textDecoration: 'none' }}>
+                {/* <Link to="/submission" state={{ choices: [no1, no2, no3, no4, no5, no6, no7, no8, no9 ], age: age }} style={{ textDecoration: 'none' }}> */}
                     <Button
                         variant="contained"
                         sx={{ mt: 1 }}
@@ -89,19 +91,53 @@ function Form() {
                                 time: time,
                                 commentsQuestions: commentsQuestions
                             };
-                            let currentdate = new Date();
-                            let datetime = (currentdate.getMonth() + 1) + "-"
-                                + currentdate.getDate() + "-"
-                                + currentdate.getFullYear() + " @ "
-                                + currentdate.getHours() + ":"
-                                + currentdate.getMinutes() + ":"
-                                + currentdate.getSeconds();
-                            await setDoc(doc(database, "submissions", datetime), docData); // date may need to be a string
+                            let missingFields = [];
+                            for (const [key, value] of Object.entries(docData)) {
+                                console.log(key, value);
+                                if (key != "commentsQuestions" && ((value instanceof String && value == "") || (value.length == 0))) {
+                                    missingFields.push(key);
+                                }
+                            }
+                            if (missingFields.length > 0) {
+                                const dict = {
+                                    "email": "Email",
+                                    "name": "Nombre y Apellido",
+                                    "phoneNumber": "Número de teléfono",
+                                    "age": "¿Cuál es tu edad?",
+                                    "no1": "1. Poco interés o placer en hacer cosas",
+                                    "no2": "2. Se ha sentido decaído(a), deprimido(a) o sin esperanzas",
+                                    "no3": "3. Ha tenido dificultad para quedarse o permanecer dormido(a), o ha dormido demasiado",
+                                    "no4": "4. Se ha sentido cansado(a) o con poca energía",
+                                    "no5": "5. Sin apetito o ha comido en exceso",
+                                    "no6": "6. Se ha sentido mal con usted mismo(a) – o que es un fracaso o que ha quedado mal con usted mismo(a) o con su familia",
+                                    "no7": "7. Ha tenido dificultad para concentrarse en ciertas actividades, tales como leer el periódico o ver la televisión",
+                                    "no8": "8. ¿Se ha movido o hablado tan lento que otras personas podrían haberlo notado? o lo contrario – muy inquieto(a) o agitado(a) que ha estado moviéndose mucho más de lo normal",
+                                    "no9": "9. Pensamientos de que estaría mejor muerto(a) o de lastimarse de alguna manera",
+                                    "miscMC": "Si marcó cualquiera de los problemas, ¿qué tanta dificultad le han dado estos problemas para hacer su trabajo, encargarse de las tareas del hogar, o llevarse bien con otras personas?",
+                                    "location": "Sector donde vive o trabaja (o la opción más cercana)",
+                                    "time": "En que horario puedo asistir, escoja todas las opciones que crea conveniente"
+                                }
+                                let warningMsg = "Por favor responda a las siguientes preguntas: \n";
+                                missingFields.forEach((each) => {
+                                    warningMsg = warningMsg + dict[each] + "\n";
+                                })
+                                window.alert(warningMsg);
+                            } else {
+                                let currentdate = new Date();
+                                let datetime = (currentdate.getMonth() + 1) + "-"
+                                    + currentdate.getDate() + "-"
+                                    + currentdate.getFullYear() + " @ "
+                                    + currentdate.getHours() + ":"
+                                    + currentdate.getMinutes() + ":"
+                                    + currentdate.getSeconds();
+                                await setDoc(doc(database, "submissions", datetime), docData); // date may need to be a string
+                                navigate('/submission', {state: { choices: [no1, no2, no3, no4, no5, no6, no7, no8, no9 ], age: age }});
+                            }
                         }}
                     >
                         Enviar
                     </Button>
-                </Link>
+                {/* </Link> */}
             </Grid>
             <Grid container direction="row">
                 <Button
