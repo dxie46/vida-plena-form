@@ -36,16 +36,18 @@ function Submitted() {
         >
             <Grid item>
                 <Card sx={{ minHeight: 150, maxWidth: 550 }}>
-                    {(score <= 9 && age == "mayor de 18 años") && <>
+                    {/* {(score <= 9 && age == "mayor de 18 años") && <>
                         <Typography variant="h4" sx={{ ml: 2, mt: 2 }}>
                             Gracias por su respuesta
                         </Typography>
                         <Typography variant="body1" sx={{ ml: 2, mb: 2, mt: 2, wordWrap: 'break-word' }}>
                             Comuníquese si tiene alguna pregunta. Agradecemos su tiempo y participación.
                         </Typography>
-                    </>}
-                    {(score > 9 && age == "mayor de 18 años") && window.location.replace('https://www.google.com')}
-                    {(age == "menor de 18 años" || age == "") &&
+                    </>} */}
+                    {(score <= 9 && age == "mayor de 18 años") && window.location.replace('https://vidaplenalatam.wordpress.com/muchas-gracias-por-cuidar-de-tu-salud-mental/')}
+                    {(score > 9 && age == "mayor de 18 años") && window.location.replace('https://vidaplenalatam.wordpress.com/gracias-por-tu-interes-en-vida-plena/')}
+                    {(age == "menor de 18 años" || age == "") && window.location.replace('https://vidaplenalatam.wordpress.com/gracias-por-tu-interes-en-un-grupo-de-apoyo-de-salud-mental/')}
+                    {/* {(age == "menor de 18 años" || age == "") &&
                         <Grid container direction="column">
                             <Typography variant="h4" sx={{ ml: 2, mt: 2 }}>
                                 Gracias por su respuesta
@@ -88,7 +90,7 @@ function Submitted() {
                                     </Button>
                                 </Link>
                             </Grid>
-                        </Grid>}
+                        </Grid>} */}
                 </Card>
             </Grid>
             <Grid item>
