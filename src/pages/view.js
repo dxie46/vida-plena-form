@@ -40,6 +40,7 @@ export default function View() {
     const [location, setLocation] = useState([]);
     const [time, setTime] = useState([]);
     const [commentsQuestions, setCommentsQuestions] = useState("");
+    const [referrer, setReferrer] = useState("");
     const [id, setId] = useState("");
 
     useEffect(() => {
@@ -67,27 +68,6 @@ export default function View() {
         })
         let excelData = formattedData;
         console.log(excelData);
-        let formattedExcelData = excelData.map(entry => {
-            return {
-                "Email": entry.email,
-                "Name": entry.name,
-                "Phone Number": entry.phoneNumber,
-                "Age": entry.age,
-                "Poco interés o placer en hacer cosas": entry.no1,
-                "Se ha sentido decaído(a), deprimido(a) o sin esperanzas": entry.no2,
-                "Ha tenido dificultad para quedarse o permanecer dormido(a), o ha dormido demasiado": entry.no3,
-                "Se ha sentido cansado(a) o con poca energía": entry.no4,
-                "Sin apetito o ha comido en exceso": entry.no5,
-                "Se ha sentido mal con usted mismo(a) – o que es un fracaso o que ha quedado mal con usted mismo(a) o con su familia": entry.no6,
-                "Ha tenido dificultad para concentrarse en ciertas actividades, tales como leer el periódico o ver la televisión": entry.no7,
-                "¿Se ha movido o hablado tan lento que otras personas podrían haberlo notado? o lo contrario – muy inquieto(a) o agitado(a) que ha estado moviéndose mucho más de lo normal": entry.no8,
-                "Pensamientos de que estaría mejor muerto(a) o de lastimarse de alguna manera": entry.no9,
-                "Si marcó cualquiera de los problemas, ¿qué tanta dificultad le han dado estos problemas para hacer su trabajo, encargarse de las tareas del hogar, o llevarse bien con otras personas?": entry.miscMC,
-                "Sector donde vive o trabaja (o la opción más cercana)": entry.locationString,
-                "En que horario puedo asistir, escoja todas las opciones que crea conveniente": entry.timeString,
-                "¿Algún comentario o pregunta?": entry.commentsQuestions
-            }
-        })
         const ws = XLSX.utils.json_to_sheet(excelData.map(function (entry) {
             let locationString = "";
             let timeString = "";
@@ -116,7 +96,9 @@ export default function View() {
                 "Si marcó cualquiera de los problemas, ¿qué tanta dificultad le han dado estos problemas para hacer su trabajo, encargarse de las tareas del hogar, o llevarse bien con otras personas?": entry.miscMC,
                 "Sector donde vive o trabaja (o la opción más cercana)": locationString,
                 "En que horario puedo asistir, escoja todas las opciones que crea conveniente": timeString,
-                "¿Algún comentario o pregunta?": entry.commentsQuestions
+                "¿Algún comentario o pregunta?": entry.commentsQuestions,
+                "Opcional: referido por (nombre de la persona o institución)": entry.referrer,
+                "Timestamp": entry.id
             }
         }));
         // const ws = XLSX.utils.json_to_sheet([{
@@ -190,6 +172,7 @@ export default function View() {
                                             setLocation(item.location);
                                             setTime(item.time);
                                             setCommentsQuestions(item.commentsQuestions);
+                                            setReferrer(item.referrer)
                                             setId(item.id);
                                         }}
                                     >
@@ -232,6 +215,7 @@ export default function View() {
                     <CheckboxButton currentChoices={location} updateChoices={setLocation} choices={["Valle de los Chillos", "Guamaní", "Quitumbe", "San Bartolo", "Las Casas", "La Florida", "Iñaquito", "El Bosque", "Condado", "La Mariscal", "Atucucho", "Other"]} question={"Sector donde vive o trabaja (o la opción más cercana)"} input={location} />
                     <CheckboxButton currentChoices={time} updateChoices={setTime} choices={["Entre semana", "Fines de semana", "En la mañana", "En las Tardes", "En las noches", "No tengo problema con el horario", "Other"]} question={"En que horario puedo asistir, escoja todas las opciones que crea conveniente"} input={time} />
                     <InputForm updateInputForm={setCommentsQuestions} question={"¿Algún comentario o pregunta?"} placeholder={"Comentario o pregunta"} input={commentsQuestions} />
+                    <InputForm updateInputForm={setReferrer} question={"Opcional: referido por (nombre de la persona o institución)"} placeholder={"Nombre"} input={referrer == undefined || referrer == "" ? "" : referrer} />
                 </Grid>
             </Grid>
         )
