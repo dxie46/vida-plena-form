@@ -88,8 +88,6 @@ export default function View() {
                 "¿Algún comentario o pregunta?": entry.commentsQuestions
             }
         })
-        console.log(excelData);
-        console.log(formattedExcelData)
         const ws = XLSX.utils.json_to_sheet(excelData.map(function (entry) {
             let locationString = "";
             let timeString = "";
