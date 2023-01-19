@@ -16,7 +16,7 @@ import * as FileSaver from 'file-saver';
 export default function View() {
 
     useEffect(() => {
-        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }, [])
 
     const locationRoute = useLocation();
@@ -57,35 +57,102 @@ export default function View() {
         handler();
     }, [])
 
-    const exportExcel = async() => {
-        let locationString = "";
-        let timeString = "";
-        location.forEach((each) => {
-            locationString = locationString + each + ", ";
+    const exportExcel = async () => {
+        const submissionCollectionRef = collection(database, "submissions");
+        const firebaseData = await getDocs(submissionCollectionRef);
+        const formattedData = firebaseData.docs.map((doc) => {
+            let curr = doc.data();
+            curr["id"] = doc.id;
+            return curr;
         })
-        time.forEach((each) => {
-            timeString = timeString + each + ", ";
+        let excelData = formattedData;
+        console.log(excelData);
+        let formattedExcelData = excelData.map(entry => {
+            return {
+                "Email": entry.email,
+                "Name": entry.name,
+                "Phone Number": entry.phoneNumber,
+                "Age": entry.age,
+                "Poco interés o placer en hacer cosas": entry.no1,
+                "Se ha sentido decaído(a), deprimido(a) o sin esperanzas": entry.no2,
+                "Ha tenido dificultad para quedarse o permanecer dormido(a), o ha dormido demasiado": entry.no3,
+                "Se ha sentido cansado(a) o con poca energía": entry.no4,
+                "Sin apetito o ha comido en exceso": entry.no5,
+                "Se ha sentido mal con usted mismo(a) – o que es un fracaso o que ha quedado mal con usted mismo(a) o con su familia": entry.no6,
+                "Ha tenido dificultad para concentrarse en ciertas actividades, tales como leer el periódico o ver la televisión": entry.no7,
+                "¿Se ha movido o hablado tan lento que otras personas podrían haberlo notado? o lo contrario – muy inquieto(a) o agitado(a) que ha estado moviéndose mucho más de lo normal": entry.no8,
+                "Pensamientos de que estaría mejor muerto(a) o de lastimarse de alguna manera": entry.no9,
+                "Si marcó cualquiera de los problemas, ¿qué tanta dificultad le han dado estos problemas para hacer su trabajo, encargarse de las tareas del hogar, o llevarse bien con otras personas?": entry.miscMC,
+                "Sector donde vive o trabaja (o la opción más cercana)": entry.locationString,
+                "En que horario puedo asistir, escoja todas las opciones que crea conveniente": entry.timeString,
+                "¿Algún comentario o pregunta?": entry.commentsQuestions
+            }
         })
-        const ws = XLSX.utils.json_to_sheet([{
-            "Email": email,
-            "Name": name,
-            "Phone Number": phoneNumber,
-            "Age": age,
-            "Poco interés o placer en hacer cosas": no1,
-            "Se ha sentido decaído(a), deprimido(a) o sin esperanzas": no2,
-            "Ha tenido dificultad para quedarse o permanecer dormido(a), o ha dormido demasiado": no3,
-            "Se ha sentido cansado(a) o con poca energía": no4,
-            "Sin apetito o ha comido en exceso": no5,
-            "Se ha sentido mal con usted mismo(a) – o que es un fracaso o que ha quedado mal con usted mismo(a) o con su familia": no6,
-            "Ha tenido dificultad para concentrarse en ciertas actividades, tales como leer el periódico o ver la televisión": no7,
-            "¿Se ha movido o hablado tan lento que otras personas podrían haberlo notado? o lo contrario – muy inquieto(a) o agitado(a) que ha estado moviéndose mucho más de lo normal": no8,
-            "Pensamientos de que estaría mejor muerto(a) o de lastimarse de alguna manera": no9,
-            "Si marcó cualquiera de los problemas, ¿qué tanta dificultad le han dado estos problemas para hacer su trabajo, encargarse de las tareas del hogar, o llevarse bien con otras personas?": miscMC,
-            "Sector donde vive o trabaja (o la opción más cercana)": locationString,
-            "En que horario puedo asistir, escoja todas las opciones que crea conveniente": timeString,
-            "¿Algún comentario o pregunta?": commentsQuestions
-        }]);
-        const wb = { Sheets: { 'data': ws }, SheetNames: ['data']};
+        console.log(excelData);
+        console.log(formattedExcelData)
+        const ws = XLSX.utils.json_to_sheet(excelData.map(function (entry) {
+            let locationString = "";
+            let timeString = "";
+            entry.location.forEach((each) => {
+                locationString = locationString + each + ", ";
+            })
+            entry.time.forEach((each) => {
+                timeString = timeString + each + ", ";
+            })
+            locationString = locationString.substring(0, locationString.length-2);
+            timeString = timeString.substring(0, timeString.length-2);
+            return {
+                "Email": entry.email,
+                "Name": entry.name,
+                "Phone Number": entry.phoneNumber,
+                "Age": entry.age,
+                "Poco interés o placer en hacer cosas": entry.no1,
+                "Se ha sentido decaído(a), deprimido(a) o sin esperanzas": entry.no2,
+                "Ha tenido dificultad para quedarse o permanecer dormido(a), o ha dormido demasiado": entry.no3,
+                "Se ha sentido cansado(a) o con poca energía": entry.no4,
+                "Sin apetito o ha comido en exceso": entry.no5,
+                "Se ha sentido mal con usted mismo(a) – o que es un fracaso o que ha quedado mal con usted mismo(a) o con su familia": entry.no6,
+                "Ha tenido dificultad para concentrarse en ciertas actividades, tales como leer el periódico o ver la televisión": entry.no7,
+                "¿Se ha movido o hablado tan lento que otras personas podrían haberlo notado? o lo contrario – muy inquieto(a) o agitado(a) que ha estado moviéndose mucho más de lo normal": entry.no8,
+                "Pensamientos de que estaría mejor muerto(a) o de lastimarse de alguna manera": entry.no9,
+                "Si marcó cualquiera de los problemas, ¿qué tanta dificultad le han dado estos problemas para hacer su trabajo, encargarse de las tareas del hogar, o llevarse bien con otras personas?": entry.miscMC,
+                "Sector donde vive o trabaja (o la opción más cercana)": locationString,
+                "En que horario puedo asistir, escoja todas las opciones que crea conveniente": timeString,
+                "¿Algún comentario o pregunta?": entry.commentsQuestions
+            }
+        }));
+        // const ws = XLSX.utils.json_to_sheet([{
+        //     "Email": email,
+        //     "Name": name,
+        //     "Phone Number": phoneNumber,
+        //     "Age": age,
+        //     "Poco interés o placer en hacer cosas": no1,
+        //     "Se ha sentido decaído(a), deprimido(a) o sin esperanzas": no2,
+        //     "Ha tenido dificultad para quedarse o permanecer dormido(a), o ha dormido demasiado": no3,
+        //     "Se ha sentido cansado(a) o con poca energía": no4,
+        //     "Sin apetito o ha comido en exceso": no5,
+        //     "Se ha sentido mal con usted mismo(a) – o que es un fracaso o que ha quedado mal con usted mismo(a) o con su familia": no6,
+        //     "Ha tenido dificultad para concentrarse en ciertas actividades, tales como leer el periódico o ver la televisión": no7,
+        //     "¿Se ha movido o hablado tan lento que otras personas podrían haberlo notado? o lo contrario – muy inquieto(a) o agitado(a) que ha estado moviéndose mucho más de lo normal": no8,
+        //     "Pensamientos de que estaría mejor muerto(a) o de lastimarse de alguna manera": no9,
+        //     "Si marcó cualquiera de los problemas, ¿qué tanta dificultad le han dado estos problemas para hacer su trabajo, encargarse de las tareas del hogar, o llevarse bien con otras personas?": miscMC,
+        //     "Sector donde vive o trabaja (o la opción más cercana)": locationString,
+        //     "En que horario puedo asistir, escoja todas las opciones que crea conveniente": timeString,
+        //     "¿Algún comentario o pregunta?": commentsQuestions
+        // }]);
+        // const ws = XLSX.utils.json_to_sheet(
+        //     [
+        //         {
+        //         "Email": "test",
+        //         "Field2": "test2"
+        //         },
+        //         {
+        //             "Email": "test",
+        //             "Field2": "test2"
+        //             },
+        // ]
+        // )
+        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
         const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
         const data = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
         FileSaver.saveAs(data, id + ".xlsx");
@@ -135,7 +202,7 @@ export default function View() {
                         </AccordionDetails>
                     </Accordion>
                     <Grid item>
-                        <Button color="success" variant="contained" startIcon={<FileDownloadIcon />} sx={{ mt: 1 }} onClick={() => {exportExcel();}}>
+                        <Button color="success" variant="contained" startIcon={<FileDownloadIcon />} sx={{ mt: 1 }} onClick={() => { exportExcel(); }}>
                             Export
                         </Button>
                     </Grid>
