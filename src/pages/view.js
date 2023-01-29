@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Accordion, AccordionSummary, AccordionDetails, Typography, Button } from '@mui/material';
+import { Grid, Accordion, AccordionSummary, AccordionDetails, Typography, Button, Snackbar } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import InputForm from '../components/inputform.js';
 import RadioButton from '../components/radiobutton.js';
 import CheckboxButton from '../components/checkboxbutton.js';
@@ -7,8 +14,9 @@ import Title from '../components/title.js';
 import InfoBox from '../components/infobox.js';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { database } from '../firebase-config.js'
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { Link, useLocation } from 'react-router-dom';
 import XLSX from 'sheetjs-style';
 import * as FileSaver from 'file-saver';
@@ -42,6 +50,9 @@ export default function View() {
     const [commentsQuestions, setCommentsQuestions] = useState("");
     const [referrer, setReferrer] = useState("");
     const [id, setId] = useState("");
+
+    const [alertOpen, setAlertOpen] = useState(false)
+    const [barOpen, setBarOpen] = useState(false)
 
     useEffect(() => {
         const handler = async () => {
@@ -77,8 +88,8 @@ export default function View() {
             entry.time.forEach((each) => {
                 timeString = timeString + each + ", ";
             })
-            locationString = locationString.substring(0, locationString.length-2);
-            timeString = timeString.substring(0, timeString.length-2);
+            locationString = locationString.substring(0, locationString.length - 2);
+            timeString = timeString.substring(0, timeString.length - 2);
             return {
                 "Email": entry.email,
                 "Name": entry.name,
@@ -138,6 +149,53 @@ export default function View() {
         FileSaver.saveAs(data, id + ".xlsx");
     }
 
+    const deleteEntries = async () => {
+
+        const submissionCollectionRef = collection(database, "submissions");
+        const firebaseData = await getDocs(submissionCollectionRef);
+        firebaseData.docs.forEach(async (this_doc) => {
+            await deleteDoc(doc(database, "submissions", this_doc.id))
+        })
+
+    }
+
+    const openAlert = () => {
+        setAlertOpen(true);
+    }
+
+    const closeAlert = () => {
+        setAlertOpen(false);
+    }
+
+    const openBar = () => {
+        setBarOpen(true)
+    }
+
+    const closeBar = () => {
+        setBarOpen(false)
+    }
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        setBarOpen(false);
+      };
+
+    const action = (
+        <React.Fragment>
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={handleClose}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </React.Fragment>
+      );
+
     if (locationRoute.state.authorized) {
 
         return (
@@ -188,6 +246,11 @@ export default function View() {
                         </Button>
                     </Grid>
                     <Grid item>
+                        <Button color="error" variant="contained" startIcon={<DeleteIcon />} sx={{ mt: 1 }} onClick={openAlert}>
+                            Clear
+                        </Button>
+                    </Grid>
+                    <Grid item>
                         <Link to='/form' style={{ textDecoration: 'none' }}>
                             <Button variant="contained" sx={{ mt: 1 }}>
                                 Back
@@ -217,6 +280,34 @@ export default function View() {
                     <InputForm updateInputForm={setCommentsQuestions} question={"¿Algún comentario o pregunta?"} placeholder={"Comentario o pregunta"} input={commentsQuestions} />
                     <InputForm updateInputForm={setReferrer} question={"Opcional: referido por (nombre de la persona o institución)"} placeholder={"Nombre"} input={referrer == undefined || referrer == "" ? "" : referrer} />
                 </Grid>
+                <Dialog
+                    open={alertOpen}
+                    onClose={closeAlert}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">
+                        Delete all forms?
+                    </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            This will delete all forms currently submitted. This action is irreversible.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={closeAlert}>Cancel</Button>
+                        <Button onClick={() => {closeAlert(); openBar(); deleteEntries(); }} autoFocus>
+                            Ok
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+                <Snackbar
+                    open={barOpen}
+                    autoHideDuration={6000}
+                    onClose={closeBar}
+                    message="All forms deleted"
+                    action={action}
+                />
             </Grid>
         )
 
