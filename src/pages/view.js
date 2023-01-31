@@ -80,6 +80,12 @@ export default function View() {
         let excelData = formattedData;
         console.log(excelData);
         const ws = XLSX.utils.json_to_sheet(excelData.map(function (entry) {
+
+            if (entry.id == "StopDelete") {
+                console.log('here')
+                return {};
+
+            }
             let locationString = "";
             let timeString = "";
             entry.location.forEach((each) => {
@@ -154,7 +160,9 @@ export default function View() {
         const submissionCollectionRef = collection(database, "submissions");
         const firebaseData = await getDocs(submissionCollectionRef);
         firebaseData.docs.forEach(async (this_doc) => {
-            await deleteDoc(doc(database, "submissions", this_doc.id))
+            if (this_doc.id != "StopDelete") {
+                await deleteDoc(doc(database, "submissions", this_doc.id))
+            }
         })
 
     }
