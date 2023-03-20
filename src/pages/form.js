@@ -5,17 +5,22 @@ import RadioButton from '../components/radiobutton.js';
 import CheckboxButton from '../components/checkboxbutton.js';
 import Title from '../components/title.js';
 import InfoBox from '../components/infobox.js';
+import ConsentBox from '../components/consentbox.js';
+import Dropdown from '../components/dropdown.js';
 import { Link } from 'react-router-dom'
 import { database } from '../firebase-config';
 import { setDoc, doc } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/vida_plena_negro.png';
+import { setDefaultEventParameters } from 'firebase/analytics';
 
 function Form() {
 
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [emergencyName, setEmergencyName] = useState("");
+    const [emergencyNumber, setEmergencyNumber] = useState("");
     const [age, setAge] = useState(""); // < 18 or > 18
     const [no1, setNo1] = useState("");
     const [no2, setNo2] = useState("");
@@ -31,6 +36,7 @@ function Form() {
     const [time, setTime] = useState([]);
     const [commentsQuestions, setCommentsQuestions] = useState("");
     const [referrer, setReferrer] = useState("");
+    const [consent, setConsent] = useState("");
 
     const [inputtedKey, setInputtedKey] = useState("");
     const [toggleKey, setTogglekey] = useState(false);
@@ -52,6 +58,8 @@ function Form() {
                 <InputForm updateInputForm={setEmail} question={"Email"} />
                 <InputForm updateInputForm={setName} question={"Nombre y Apellido"} />
                 <InputForm updateInputForm={setPhoneNumber} question={"Número de teléfono"} />
+                <InputForm updateInputForm={setEmergencyName} question={"Nombre de contacto de emergencia"} />
+                <InputForm updateInputForm={setEmergencyNumber} question={"Número telefónico de contacto de emergencia"} />
                 <RadioButton updateSelection={setAge} selections={["menor de 18 años", "mayor de 18 años"]} question={"¿Cuál es tu edad?"} />
                 <InfoBox />
                 <RadioButton updateSelection={setNo1} selections={["0 Ningún día", "1 Varios días", "2 Más de la mitad de los días", "3 Casi todos los días"]} question={"1. Poco interés o placer en hacer cosas"} />
@@ -66,8 +74,10 @@ function Form() {
                 <RadioButton updateSelection={setMiscMC} selections={["No ha sido difícil", "Un poco difícil", "Muy difícil", "Extremadamente difícil"]} question={"Si marcó cualquiera de los problemas, ¿qué tanta dificultad le han dado estos problemas para hacer su trabajo, encargarse de las tareas del hogar, o llevarse bien con otras personas?"} />
                 <CheckboxButton currentChoices={location} updateChoices={setLocation} choices={["Valle de los Chillos", "Guamaní", "Quitumbe", "San Bartolo", "Las Casas", "La Florida", "Iñaquito", "El Bosque", "Condado", "La Mariscal", "Atucucho", "Other"]} question={"Sector donde vive o trabaja (o la opción más cercana)"} />
                 <CheckboxButton currentChoices={time} updateChoices={setTime} choices={["Entre semana", "Fines de semana", "En la mañana", "En las Tardes", "En las noches", "No tengo problema con el horario", "Other"]} question={"En que horario puedo asistir, escoja todas las opciones que crea conveniente"} />
+                <Dropdown updateSelection={setReferrer} selections={["Hospital del Dia de la Central", "Fundacion Fabián Ponce", "Centro de Mediación Municipal ", "Casa Somos", "Parroquia María Auxiliadora", "empleado de Kruger", "familiar de un empleado de Kruger", "recomendación por un participante pasado", "recibí una publicidad digital", "Otro"]} question={"Referido por (nombre de la persona o institución)"} placeholder={"Nombre"} />
                 <InputForm updateInputForm={setCommentsQuestions} question={"¿Algún comentario o pregunta?"} placeholder={"Comentario o pregunta"} />
-                <InputForm updateInputForm={setReferrer} question={"Opcional: referido por (nombre de la persona o institución)"} placeholder={"Nombre"} />
+                <ConsentBox updateSelection={setConsent}/>
+                {/* <InputForm updateInputForm={setReferrer} question={"Opcional: referido por (nombre de la persona o institución)"} placeholder={"Nombre"} /> */}
                 {/* <Link to="/submission" state={{ choices: [no1, no2, no3, no4, no5, no6, no7, no8, no9 ], age: age }} style={{ textDecoration: 'none' }}> */}
                     <Button
                         variant="contained"
@@ -78,6 +88,8 @@ function Form() {
                                 email: email,
                                 name: name,
                                 phoneNumber: phoneNumber,
+                                emergencyName: emergencyName,
+                                emergencyNumber: emergencyNumber,
                                 age: age,
                                 no1: no1,
                                 no2: no2,
@@ -92,12 +104,13 @@ function Form() {
                                 location: location,
                                 time: time,
                                 commentsQuestions: commentsQuestions,
-                                referrer: referrer
+                                referrer: referrer,
+                                consent: consent
                             };
                             let missingFields = [];
                             for (const [key, value] of Object.entries(docData)) {
                                 console.log(key, value);
-                                if (key != "commentsQuestions" && key != "referrer" && ((value instanceof String && value == "") || (value.length == 0))) {
+                                if (key != "commentsQuestions" && ((value instanceof String && value == "") || (value.length == 0))) {
                                     missingFields.push(key);
                                 }
                             }
@@ -106,6 +119,8 @@ function Form() {
                                     "email": "Email",
                                     "name": "Nombre y Apellido",
                                     "phoneNumber": "Número de teléfono",
+                                    "emergencyName": "Nombre de contacto de emergencia",
+                                    "emergencyNumber": "Número telefónico de contacto de emergencia",
                                     "age": "¿Cuál es tu edad?",
                                     "no1": "1. Poco interés o placer en hacer cosas",
                                     "no2": "2. Se ha sentido decaído(a), deprimido(a) o sin esperanzas",
@@ -118,7 +133,9 @@ function Form() {
                                     "no9": "9. Pensamientos de que estaría mejor muerto(a) o de lastimarse de alguna manera",
                                     "miscMC": "Si marcó cualquiera de los problemas, ¿qué tanta dificultad le han dado estos problemas para hacer su trabajo, encargarse de las tareas del hogar, o llevarse bien con otras personas?",
                                     "location": "Sector donde vive o trabaja (o la opción más cercana)",
-                                    "time": "En que horario puedo asistir, escoja todas las opciones que crea conveniente"
+                                    "time": "En que horario puedo asistir, escoja todas las opciones que crea conveniente",
+                                    "referrer": "Referido por (nombre de la persona o institución)",
+                                    "consent": "Declaración de consentimiento informado:"
                                 }
                                 let warningMsg = "Por favor responda a las siguientes preguntas: \n";
                                 missingFields.forEach((each) => {

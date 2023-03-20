@@ -12,6 +12,8 @@ import RadioButton from '../components/radiobutton.js';
 import CheckboxButton from '../components/checkboxbutton.js';
 import Title from '../components/title.js';
 import InfoBox from '../components/infobox.js';
+import Dropdown from '../components/dropdown.js';
+import ConsentBox from '../components/consentbox.js';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -34,6 +36,8 @@ export default function View() {
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [emergencyName, setEmergencyName] = useState("");
+    const [emergencyNumber, setEmergencyNumber] = useState("");
     const [age, setAge] = useState(""); // < 18 or > 18
     const [no1, setNo1] = useState("");
     const [no2, setNo2] = useState("");
@@ -49,6 +53,7 @@ export default function View() {
     const [time, setTime] = useState([]);
     const [commentsQuestions, setCommentsQuestions] = useState("");
     const [referrer, setReferrer] = useState("");
+    const [consent, setConsent] = useState("");
     const [id, setId] = useState("");
 
     const [alertOpen, setAlertOpen] = useState(false)
@@ -61,7 +66,9 @@ export default function View() {
             const formattedData = firebaseData.docs.map((doc) => {
                 let curr = doc.data();
                 curr["id"] = doc.id;
-                return curr;
+                if (doc.id != "StopDelete") {
+                    return curr;
+                }
             })
             console.log(formattedData);
             setData(formattedData);
@@ -100,6 +107,8 @@ export default function View() {
                 "Email": entry.email,
                 "Name": entry.name,
                 "Phone Number": entry.phoneNumber,
+                "Emergency Contact Name": entry.emergencyName,
+                "Emergency Phone Number": entry.emergencyNumber,
                 "Age": entry.age,
                 "Poco interés o placer en hacer cosas": entry.no1,
                 "Se ha sentido decaído(a), deprimido(a) o sin esperanzas": entry.no2,
@@ -114,7 +123,7 @@ export default function View() {
                 "Sector donde vive o trabaja (o la opción más cercana)": locationString,
                 "En que horario puedo asistir, escoja todas las opciones que crea conveniente": timeString,
                 "¿Algún comentario o pregunta?": entry.commentsQuestions,
-                "Opcional: referido por (nombre de la persona o institución)": entry.referrer,
+                "Referido por (nombre de la persona o institución)": entry.referrer,
                 "Timestamp": entry.id
             }
         }));
@@ -215,6 +224,7 @@ export default function View() {
                         </AccordionSummary>
                         <AccordionDetails sx={{ direction: "column" }}>
                             {data.map((item) => {
+                                if (item != null) {
                                 return (
                                     <Button
                                         variant="contained"
@@ -238,13 +248,16 @@ export default function View() {
                                             setLocation(item.location);
                                             setTime(item.time);
                                             setCommentsQuestions(item.commentsQuestions);
-                                            setReferrer(item.referrer)
+                                            setReferrer(item.referrer);
                                             setId(item.id);
+                                            setConsent(item.consent);
+                                            setEmergencyName(item.emergencyName);
+                                            setEmergencyNumber(item.emergencyNumber);
                                         }}
                                     >
                                         {item.id}
                                     </Button>
-                                )
+                                )}
                             })}
                         </AccordionDetails>
                     </Accordion>
@@ -271,6 +284,8 @@ export default function View() {
                     <InputForm updateInputForm={setEmail} question={"Email"} input={email} />
                     <InputForm updateInputForm={setName} question={"Nombre y Apellido"} input={name} />
                     <InputForm updateInputForm={setPhoneNumber} question={"Número de teléfono"} input={phoneNumber} />
+                    <InputForm updateInputForm={setEmergencyName} question={"Nombre de contacto de emergencia"} input={emergencyName}/>
+                    <InputForm updateInputForm={setEmergencyNumber} question={"Número telefónico de contacto de emergencia"} input={emergencyNumber}/>
                     <RadioButton updateSelection={setAge} selections={["menor de 18 años", "mayor de 18 años"]} question={"¿Cuál es tu edad?"} input={age} />
                     <InfoBox />
                     <RadioButton updateSelection={setNo1} selections={["0 Ningún día", "1 Varios días", "2 Más de la mitad de los días", "3 Casi todos los días"]} question={"1. Poco interés o placer en hacer cosas"} input={no1} />
@@ -285,8 +300,9 @@ export default function View() {
                     <RadioButton updateSelection={setMiscMC} selections={["No ha sido difícil", "Un poco difícil", "Muy difícil", "Extremadamente difícil"]} question={"Si marcó cualquiera de los problemas, ¿qué tanta dificultad le han dado estos problemas para hacer su trabajo, encargarse de las tareas del hogar, o llevarse bien con otras personas?"} input={miscMC} />
                     <CheckboxButton currentChoices={location} updateChoices={setLocation} choices={["Valle de los Chillos", "Guamaní", "Quitumbe", "San Bartolo", "Las Casas", "La Florida", "Iñaquito", "El Bosque", "Condado", "La Mariscal", "Atucucho", "Other"]} question={"Sector donde vive o trabaja (o la opción más cercana)"} input={location} />
                     <CheckboxButton currentChoices={time} updateChoices={setTime} choices={["Entre semana", "Fines de semana", "En la mañana", "En las Tardes", "En las noches", "No tengo problema con el horario", "Other"]} question={"En que horario puedo asistir, escoja todas las opciones que crea conveniente"} input={time} />
+                    <Dropdown updateSelection={setReferrer} selections={["Hospital del Dia de la Central", "Fundacion Fabián Ponce", "Centro de Mediación Municipal ", "Casa Somos", "Parroquia María Auxiliadora", "empleado de Kruger", "familiar de un empleado de Kruger", "recomendación por un participante pasado", "recibí una publicidad digital", "Otro"]} question={"Referido por (nombre de la persona o institución)"} placeholder={"Nombre"} input={referrer.substring(0, 4) == "Otro" ? "Otro" : referrer} />
                     <InputForm updateInputForm={setCommentsQuestions} question={"¿Algún comentario o pregunta?"} placeholder={"Comentario o pregunta"} input={commentsQuestions} />
-                    <InputForm updateInputForm={setReferrer} question={"Opcional: referido por (nombre de la persona o institución)"} placeholder={"Nombre"} input={referrer == undefined || referrer == "" ? "" : referrer} />
+                    <ConsentBox updateSelection={setConsent} input={consent}/>
                 </Grid>
                 <Dialog
                     open={alertOpen}
@@ -304,7 +320,7 @@ export default function View() {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={closeAlert}>Cancel</Button>
-                        <Button onClick={() => {closeAlert(); openBar(); deleteEntries(); }} autoFocus>
+                        <Button onClick={() => {closeAlert(); openBar(); deleteEntries(); setData([]) }} autoFocus>
                             Ok
                         </Button>
                     </DialogActions>
