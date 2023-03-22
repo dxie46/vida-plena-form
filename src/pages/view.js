@@ -124,6 +124,7 @@ export default function View() {
                 "En que horario puedo asistir, escoja todas las opciones que crea conveniente": timeString,
                 "¿Algún comentario o pregunta?": entry.commentsQuestions,
                 "Referido por (nombre de la persona o institución)": entry.referrer,
+                "Consent": entry.consent,
                 "Timestamp": entry.id
             }
         }));

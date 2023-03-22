@@ -16,7 +16,7 @@ function ConsentBox(props) {
                         variant="body1"
                         sx={{ fontStyle: 'italic' }}
                         onClick={() => {
-                            window.location.replace("https://vidaplenalatam.wordpress.com/74-2/");
+                            window.open("https://vidaplenalatam.wordpress.com/74-2/", "_blank");
                         }}
                     >
                         (hacer clic para leer)
@@ -29,6 +29,9 @@ function ConsentBox(props) {
                 <RadioGroup
                     sx={{ ml: 2, mb: 1 }}
                     onChange={(event) => {
+                        if (event.target.value == "No") {
+                            window.open("https://vidaplenalatam.org/muchas-gracias-por-tu-interes-en-vida-plena/", "_blank");
+                        }
                         props.updateSelection(event.target.value);
                     }}
                 >
