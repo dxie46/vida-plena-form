@@ -35,6 +35,7 @@ export default function View() {
 
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
+    const [passport, setPassport] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [emergencyName, setEmergencyName] = useState("");
     const [emergencyNumber, setEmergencyNumber] = useState("");
@@ -106,6 +107,7 @@ export default function View() {
             return {
                 "Email": entry.email,
                 "Name": entry.name,
+                "Passport": entry.passport,
                 "Phone Number": entry.phoneNumber,
                 "Emergency Contact Name": entry.emergencyName,
                 "Emergency Phone Number": entry.emergencyNumber,
@@ -234,6 +236,7 @@ export default function View() {
                                         onClick={() => {
                                             setEmail(item.email);
                                             setName(item.name);
+                                            setPassport(item.passport);
                                             setPhoneNumber(item.phoneNumber);
                                             setAge(item.age);
                                             setNo1(item.no1);
@@ -284,6 +287,7 @@ export default function View() {
                     <Title />
                     <InputForm updateInputForm={setEmail} question={"Email"} input={email} />
                     <InputForm updateInputForm={setName} question={"Nombre y Apellido"} input={name} />
+                    <InputForm updateInputForm={setPassport} question={"Número de cédula o pasaporte"} input={passport} />
                     <InputForm updateInputForm={setPhoneNumber} question={"Número de teléfono"} input={phoneNumber} />
                     <InputForm updateInputForm={setEmergencyName} question={"Nombre de contacto de emergencia"} input={emergencyName}/>
                     <InputForm updateInputForm={setEmergencyNumber} question={"Número telefónico de contacto de emergencia"} input={emergencyNumber}/>
@@ -299,9 +303,9 @@ export default function View() {
                     <RadioButton updateSelection={setNo8} selections={["0 Ningún día", "1 Varios días", "2 Más de la mitad de los días", "3 Casi todos los días"]} question={"8. ¿Se ha movido o hablado tan lento que otras personas podrían haberlo notado? o lo contrario – muy inquieto(a) o agitado(a) que ha estado moviéndose mucho más de lo normal"} input={no8} />
                     <RadioButton updateSelection={setNo9} selections={["0 Ningún día", "1 Varios días", "2 Más de la mitad de los días", "3 Casi todos los días"]} question={"9. Pensamientos de que estaría mejor muerto(a) o de lastimarse de alguna manera"} input={no9} />
                     <RadioButton updateSelection={setMiscMC} selections={["No ha sido difícil", "Un poco difícil", "Muy difícil", "Extremadamente difícil"]} question={"Si marcó cualquiera de los problemas, ¿qué tanta dificultad le han dado estos problemas para hacer su trabajo, encargarse de las tareas del hogar, o llevarse bien con otras personas?"} input={miscMC} />
-                    <CheckboxButton currentChoices={location} updateChoices={setLocation} choices={["Valle de los Chillos", "Guamaní", "Quitumbe", "San Bartolo", "Las Casas", "La Florida", "Iñaquito", "El Bosque", "Condado", "La Mariscal", "Atucucho", "Other"]} question={"Sector donde vive o trabaja (o la opción más cercana)"} input={location} />
+                    <CheckboxButton currentChoices={location} updateChoices={setLocation} choices={["Quito Centro", "Quito Norte", "Quito Sur", "Guamani", "Valle de los Chillos", "Otro"]} question={"Sector donde vive o trabaja (o la opción más cercana)"} input={location} />
                     <CheckboxButton currentChoices={time} updateChoices={setTime} choices={["Entre semana", "Fines de semana", "En la mañana", "En las Tardes", "En las noches", "No tengo problema con el horario", "Other"]} question={"En que horario puedo asistir, escoja todas las opciones que crea conveniente"} input={time} />
-                    <Dropdown updateSelection={setReferrer} selections={["Hospital del Dia de la Central", "Fundacion Fabián Ponce", "Centro de Mediación Municipal ", "Casa Somos", "Parroquia María Auxiliadora", "empleado de Kruger", "familiar de un empleado de Kruger", "recomendación por un participante pasado", "recibí una publicidad digital", "Bienestar Universitario UCE", "Vision Mundial", "Otro"]} question={"Referido por (nombre de la persona o institución)"} placeholder={"Nombre"} input={referrer.substring(0, 4) == "Otro" ? "Otro" : referrer} />
+                    <Dropdown updateSelection={setReferrer} selections={["Hospital del Dia de la Central", "Fundacion Fabián Ponce", "Centro de Mediación Municipal ", "Casa Somos", "Parroquia María Auxiliadora", "recomendación por un participante pasado", "recibí una publicidad digital", "Vision Mundial", "FUDELA", "Banco de Alimentos (BAQ)", "Clinica de mujer AFAC", "Redes como Facebook o Instagram ", "Búsqueda de Google", "Otro"]} question={"Referido por (nombre de la persona o institución)"} placeholder={"Nombre"} input={referrer.substring(0, 4) == "Otro" ? "Otro" : referrer} />
                     <InputForm updateInputForm={setCommentsQuestions} question={"¿Algún comentario o pregunta?"} placeholder={"Comentario o pregunta"} input={commentsQuestions} />
                     <ConsentBox updateSelection={setConsent} input={consent}/>
                 </Grid>

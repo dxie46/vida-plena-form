@@ -18,6 +18,7 @@ function Form() {
 
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
+    const [passport, setPassport] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [emergencyName, setEmergencyName] = useState("");
     const [emergencyNumber, setEmergencyNumber] = useState("");
@@ -57,6 +58,7 @@ function Form() {
                 <Title />
                 <InputForm updateInputForm={setEmail} question={"Email"} />
                 <InputForm updateInputForm={setName} question={"Nombre y Apellido"} />
+                <InputForm updateInputForm={setPassport} question={"Número de cédula o pasaporte"} />
                 <InputForm updateInputForm={setPhoneNumber} question={"Número de teléfono"} />
                 <InputForm updateInputForm={setEmergencyName} question={"Nombre de contacto de emergencia"} />
                 <InputForm updateInputForm={setEmergencyNumber} question={"Número telefónico de contacto de emergencia"} />
@@ -74,7 +76,7 @@ function Form() {
                 <RadioButton updateSelection={setMiscMC} selections={["No ha sido difícil", "Un poco difícil", "Muy difícil", "Extremadamente difícil"]} question={"Si marcó cualquiera de los problemas, ¿qué tanta dificultad le han dado estos problemas para hacer su trabajo, encargarse de las tareas del hogar, o llevarse bien con otras personas?"} />
                 <CheckboxButton currentChoices={location} updateChoices={setLocation} choices={["Quito Centro", "Quito Norte", "Quito Sur", "Guamani", "Valle de los Chillos", "Otro"]} question={"Sector donde vive o trabaja (o la opción más cercana)"} />
                 <CheckboxButton currentChoices={time} updateChoices={setTime} choices={["Entre semana", "Fines de semana", "En la mañana", "En las Tardes", "En las noches", "No tengo problema con el horario", "Other"]} question={"En que horario puedo asistir, escoja todas las opciones que crea conveniente"} />
-                <Dropdown updateSelection={setReferrer} selections={["Hospital del Dia de la Central", "Fundacion Fabián Ponce", "Centro de Mediación Municipal ", "Casa Somos", "Parroquia María Auxiliadora", "empleado de Kruger", "familiar de un empleado de Kruger", "recomendación por un participante pasado", "recibí una publicidad digital", "Bienestar Universitario UCE", "Vision Mundial", "Otro"]} question={"Referido por (nombre de la persona o institución)"} placeholder={"Nombre"} />
+                <Dropdown updateSelection={setReferrer} selections={["Hospital del Dia de la Central", "Fundacion Fabián Ponce", "Centro de Mediación Municipal ", "Casa Somos", "Parroquia María Auxiliadora", "recomendación por un participante pasado", "recibí una publicidad digital", "Vision Mundial", "FUDELA", "Banco de Alimentos (BAQ)", "Clinica de mujer AFAC", "Redes como Facebook o Instagram ", "Búsqueda de Google", "Otro"]} question={"Referido por (nombre de la persona o institución)"} placeholder={"Nombre"} />
                 <InputForm updateInputForm={setCommentsQuestions} question={"¿Algún comentario o pregunta?"} placeholder={"Comentario o pregunta"} />
                 <ConsentBox updateSelection={setConsent}/>
                 {/* <InputForm updateInputForm={setReferrer} question={"Opcional: referido por (nombre de la persona o institución)"} placeholder={"Nombre"} /> */}
@@ -87,6 +89,7 @@ function Form() {
                             const docData = {
                                 email: email,
                                 name: name,
+                                passport: passport,
                                 phoneNumber: phoneNumber,
                                 emergencyName: emergencyName,
                                 emergencyNumber: emergencyNumber,
@@ -118,6 +121,7 @@ function Form() {
                                 const dict = {
                                     "email": "Email",
                                     "name": "Nombre y Apellido",
+                                    "passport": "Número de cédula o pasaporte",
                                     "phoneNumber": "Número de teléfono",
                                     "emergencyName": "Nombre de contacto de emergencia",
                                     "emergencyNumber": "Número telefónico de contacto de emergencia",
