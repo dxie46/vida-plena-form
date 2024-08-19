@@ -56,7 +56,7 @@ function Form() {
             >
                 <img src={logo} style={{ maxWidth: 450, maxHeight: 350 }}/>
                 <Title />
-                <InputForm updateInputForm={setEmail} question={"Email"} />
+                {/* <InputForm updateInputForm={setEmail} question={"Email"} />
                 <InputForm updateInputForm={setName} question={"Nombre y Apellido"} />
                 <InputForm updateInputForm={setPassport} question={"Número de cédula o pasaporte"} />
                 <InputForm updateInputForm={setPhoneNumber} question={"Número de teléfono"} />
@@ -78,10 +78,10 @@ function Form() {
                 <CheckboxButton currentChoices={time} updateChoices={setTime} choices={["Entre semana", "Fines de semana", "En la mañana", "En las Tardes", "En las noches", "No tengo problema con el horario", "Other"]} question={"En que horario puedo asistir, escoja todas las opciones que crea conveniente"} />
                 <Dropdown updateSelection={setReferrer} selections={["Hospital del Dia de la Central", "Fundacion Fabián Ponce", "Centro de Mediación Municipal ", "Casa Somos", "Parroquia María Auxiliadora", "recomendación por un participante pasado", "recibí una publicidad digital", "Vision Mundial", "FUDELA", "Banco de Alimentos (BAQ)", "Clinica de mujer AFAC", "Redes como Facebook o Instagram ", "Búsqueda de Google", "Otro"]} question={"Referido por (nombre de la persona o institución)"} placeholder={"Nombre"} />
                 <InputForm updateInputForm={setCommentsQuestions} question={"¿Algún comentario o pregunta?"} placeholder={"Comentario o pregunta"} />
-                <ConsentBox updateSelection={setConsent}/>
+                <ConsentBox updateSelection={setConsent}/> */}
                 {/* <InputForm updateInputForm={setReferrer} question={"Opcional: referido por (nombre de la persona o institución)"} placeholder={"Nombre"} /> */}
                 {/* <Link to="/submission" state={{ choices: [no1, no2, no3, no4, no5, no6, no7, no8, no9 ], age: age }} style={{ textDecoration: 'none' }}> */}
-                    <Button
+                    {/* <Button
                         variant="contained"
                         sx={{ mt: 1 }}
                         textAlign="right"
@@ -160,10 +160,9 @@ function Form() {
                         }}
                     >
                         Enviar
-                    </Button>
-                {/* </Link> */}
+                    </Button> */}
             </Grid>
-            <Grid container direction="row">
+            {/* <Grid container direction="row">
                 <Button
                     onClick={() => {
                         setTogglekey(!toggleKey);
@@ -193,7 +192,7 @@ function Form() {
                         </Button>
                     </>
                 }
-            </Grid>
+            </Grid> */}
         </>
     )
 
